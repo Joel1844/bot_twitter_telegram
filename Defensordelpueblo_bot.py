@@ -101,9 +101,7 @@ def main() -> None:
         # start_polling() is non-blocking and will stop the bot gracefully.
         updater.idle()
     except Exception as e:
-        time.sleep(90)
-        print(e)
-        print("Error de internet, esperando 120 segundos")
+        time.sleep(5)
         main()
 
 if __name__ == '__main__':
