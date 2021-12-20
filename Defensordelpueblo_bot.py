@@ -48,10 +48,11 @@ def getYesterday():
 
 def tweet(update:Update, context:CallbackContext):
     input = update.message.text.split(" ")
-    if not input[0] == "tweet":
+    if not input[0].lower() == "tweet":
         return
     
-    palabras_claves = ["defensorrd","peulloa"]
+    palabras_claves = []
+    palabras_claves.append(input[1])
     #palabras_claves = ["defensorrd","vulnerable","defensor","derecho","pueblo","violacion","motin","carcel","educacion","medioambiente","salud","reclamo","queja","cuidadania","pobreza","usuarios","Trabajo","discriminacion","despido","fundamental","peulloa"]
     
     c = twint.Config()
@@ -65,7 +66,6 @@ def tweet(update:Update, context:CallbackContext):
     for palabras in palabras_claves:
         c.Search = palabras
         twint.run.Search(c)
-        
         data = pd.read_csv('filename.csv')
         tweet_list = zip(list(data['link']),list(data['tweet']))
         for link, tweet in tweet_list:
