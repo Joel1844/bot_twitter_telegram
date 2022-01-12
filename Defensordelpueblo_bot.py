@@ -8,6 +8,10 @@ import datetime
 import pandas as pd
 import nest_asyncio
 import time
+from Scweet.scweet import scrape
+from Scweet.user import get_user_information, get_users_following, get_users_followers
+import datetime
+import pandas as pd 
 nest_asyncio.apply()
 
 # Enable logging
@@ -46,34 +50,52 @@ def getYesterday():
     return str(yesterday)
 
 
+# def tweet(update:Update, context:CallbackContext):
+#     input = update.message.text.split(" ")
+#     if not input[0].lower() == "tweet":
+#         return
+    
+#     palabras_claves = []
+#     palabras_claves.append(input[1])
+#     #palabras_claves = ["defensorrd","vulnerable","defensor","derecho","pueblo","violacion","motin","carcel","educacion","medioambiente","salud","reclamo","queja","cuidadania","pobreza","usuarios","Trabajo","discriminacion","despido","fundamental","peulloa"]
+    
+#     c = twint.Config()
+#     c.Since = getYesterday()
+#     c.Lang = "es"
+#     c.Near = "Republica Dominicana"
+#     c.Limit = 100
+#     c.Store_csv = True
+#     c.Output = "filename.csv"
+    
+#     for palabras in palabras_claves:
+#         c.Search = palabras
+#         twint.run.Search(c)
+#         data = pd.read_csv('filename.csv')
+#         tweet_list = zip(list(data['link']),list(data['tweet']))
+#         for link, tweet in tweet_list:
+#             update.message.reply_text(f'{link} \n {tweet}') 
+
+#         if path.exists('filename.csv'):
+#             remove('filename.csv')
+
+
+
 def tweet(update:Update, context:CallbackContext):
+    update.message.reply_text('Aguarde un momento...')
     input = update.message.text.split(" ")
     if not input[0].lower() == "tweet":
         return
-    
     palabras_claves = []
     palabras_claves.append(input[1])
-    #palabras_claves = ["defensorrd","vulnerable","defensor","derecho","pueblo","violacion","motin","carcel","educacion","medioambiente","salud","reclamo","queja","cuidadania","pobreza","usuarios","Trabajo","discriminacion","despido","fundamental","peulloa"]
-    
-    c = twint.Config()
-    c.Since = getYesterday()
-    c.Lang = "es"
-    c.Near = "Republica Dominicana"
-    c.Limit = 100
-    c.Store_csv = True
-    c.Output = "filename.csv"
-    
-    for palabras in palabras_claves:
-        c.Search = palabras
-        twint.run.Search(c)
-        data = pd.read_csv('filename.csv')
-        tweet_list = zip(list(data['link']),list(data['tweet']))
-        for link, tweet in tweet_list:
-            update.message.reply_text(f'{link} \n {tweet}') 
 
-        if path.exists('filename.csv'):
-            remove('filename.csv')
+    data = scrape(words=palabras_claves, since=getYesterday(), from_account = None,interval=1, 
+      headless=True, display_type="Top", save_images=False, proxy = None, save_dir = 'outputs',
+             resume=False, filter_replies=True, proximity=False)
 
+    tweet_list = zip(list(data['Tweet URL']),list(data['Embedded_text']))
+    for link, tweet in tweet_list:
+        update.message.reply_text(f'{link} \n {tweet[:-9]}') 
+        
 
 def main() -> None:
     try:
