@@ -1,9 +1,6 @@
 import logging
 from telegram import Update, ForceReply
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext
-import twint
-from os import remove
-from os import path
 import datetime
 import pandas as pd
 import nest_asyncio
